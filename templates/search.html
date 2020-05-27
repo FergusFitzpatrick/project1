@@ -1,0 +1,9 @@
+{% extends "nav.html" %}
+
+{% block body %}
+<ul>
+{% for book in books %}
+  <li>TITLE: {{ book.title }} ISBN: {{ book.isbn }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
