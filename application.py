@@ -1,4 +1,5 @@
 import os
+import requests, json
 
 from flask import Flask, session, request, render_template
 from flask_session import Session
@@ -35,9 +36,18 @@ def search():
     return render_template("search.html", title=title, books=books)
 
 
-@app.route("/api/<int:isbn>")
-def api(isbn):
-    api = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": isbn}).fetchone()
-    if book is None:
-        return render_template("error.html", message="No such book.")
-    return render_template("api.html", api=api)
+@app.route("/search/bookpage/<isbn>", methods=['GET'])
+def book(isbn):
+    book = db.execute("SELECT title, isbn FROM books WHERE isbn = :isbn",{"isbn": isbn}).fetchone()
+    db.commit()
+    KEY = "Tpre1YWnXuIint1k5r4HUAß"
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": KEY, "isbns": isbn})
+    if res.status_code != 200:
+        raise Exception ("Error api unsuccessful.")
+    data = res.json()
+    num_rating = data["books"][0]
+    rating = data["books"][0]
+    return render_template("bookpage.html", num_rating=num_rating, rating=rating, book=book)
+
+if __name__ == "__main__":
+    app.run(debug=True)
