@@ -1,0 +1,13 @@
+{% extends "nav.html" %}
+
+{% block body %}
+<main>
+  <form  class="form" action="{{ url_for('search') }}" method="POST">
+    <div class="form-group">
+      <label> Search a title, author or ISBN</label>
+      <input class="form-control" type="text" name="searchquery" placeholder="Agatha Christie">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</main>
+{% endblock %}

@@ -1,5 +1,6 @@
 import os
 import requests, json
+import bcrypt
 
 from flask import Flask, session, request, render_template
 from flask_session import Session
@@ -29,24 +30,71 @@ def index():
     title = "Home"
     return render_template("index.html", title=title)
 
-@app.route("/search")
-def search():
-    books = db.execute("SELECT * FROM books").fetchall()
+@app.route("/signup")
+def signup():
+    title = "Sign Up"
+    return render_template("signup.html", title=title)
+
+@app.route("/logIn", methods=['GET','POST'])
+def signingUp():
+    title = "Log In"
+    if request.method == 'GET':
+        return render_template("login.html", title=title)
+
+    #get the request form variable
+    firstname = request.form.get('firstname')
+    lastname = request.form.get('lastname')
+    username = request.form.get('username')
+    email = request.form.get('email')
+    password = bcrypt.hashpw(request.form.get('password'), bcrypt.gensalt())
+
+    if db.execute("SELECT username FROM users WHERE username = :username", {"username": username}).rowcount != 0:
+        return render_template("signup.html", message="Username already exists!")
+
+    db.execute("INSERT INTO users (firstname, lastname, username, email, password) VALUES (:firstname, :lastname, :username, :email, :password)",{"firstname": firstname, "lastname": lastname, "username": username, "email": email, "password": password})
+    db.commit()
+    if db.execute("SELECT * FROM users WHERE username = :username",{"username": username}).rowcount == 0:
+        return render_template("error.html", message="error signing up.")
+    else:
+        return render_template("login.html", message="Successfully signed up!")
+
+@app.route("/searchPage", methods=['POST','GET'])
+def loggingin():
     title = "Search"
-    return render_template("search.html", title=title, books=books)
+
+    #get request form variables
+    username = request.form.get('username')
+    if db.execute("SELECT username FROM users WHERE username = :username",{"username": username}).rowcount == 0:
+        return render_template("login.html", message="invalid username, please try again.")
+    hashed_password = db.execute("SELECT username, password FROM users WHERE username = :username",{"username": username}).fetchone()
+    if bcrypt.checkpw(request.form.get('password'), hashed_password):
+        return render_template("searchPage.html", title=title)
+    else:
+        return render_template("login.html", message="Incorrect Password.")
+
+
+@app.route("/search", methods=['POST','GET'])
+def search():
+    title = "Search"
+    searchQuery = request.form.get("searchquery")
+    query = '%' + searchQuery + '%'
+    if db.execute("SELECT title, isbn, author, year FROM books WHERE title ILIKE :query OR isbn ILIKE :query OR author ILIKE :query", {"query": query}).rowcount == 0:
+        return render_template("error.html", message="Invalid serach query, no such book.")
+    books = db.execute("SELECT * FROM books WHERE title ILIKE :query OR isbn ILIKE :query OR author ILIKE :query ORDER BY year ASC LIMIT 20", {"query": query}).fetchall()
+    return render_template("search.html", title=title, books=books, searchQuery=searchQuery)
 
 
 @app.route("/search/bookpage/<isbn>", methods=['GET'])
 def book(isbn):
-    book = db.execute("SELECT title, isbn FROM books WHERE isbn = :isbn",{"isbn": isbn}).fetchone()
+    book = db.execute("SELECT * FROM books WHERE isbn = :isbn",{"isbn": isbn}).fetchone()
     db.commit()
     KEY = "Tpre1YWnXuIint1k5r4HUAß"
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": KEY, "isbns": isbn})
     if res.status_code != 200:
         raise Exception ("Error api unsuccessful.")
     data = res.json()
-    num_rating = data["books"][0]
-    rating = data["books"][0]
+    num_rating = data["books"][0]["work_ratings_count"]
+    rating = data["books"][0]["average_rating"]
     return render_template("bookpage.html", num_rating=num_rating, rating=rating, book=book)
 
 if __name__ == "__main__":
