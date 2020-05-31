@@ -54,19 +54,18 @@ def signingUp():
     db.execute("INSERT INTO users (firstname, lastname, username, email, password) VALUES (:firstname, :lastname, :username, :email, :password)",{"firstname": firstname, "lastname": lastname, "username": username, "email": email, "password": password})
     db.commit()
     if db.execute("SELECT * FROM users WHERE username = :username",{"username": username}).rowcount == 0:
-        return render_template("error.html", message="error signing up.")
-    else:
         return render_template("login.html", message="Successfully signed up!")
+    else:
+        return render_template("error.html", message="error signing up.")
 
 @app.route("/searchPage", methods=['POST','GET'])
 def loggingin():
     title = "Search"
-
     #get request form variables
     username = request.form.get('username')
     if db.execute("SELECT username FROM users WHERE username = :username",{"username": username}).rowcount == 0:
         return render_template("login.html", message="invalid username, please try again.")
-    hashed_password = db.execute("SELECT username, password FROM users WHERE username = :username",{"username": username}).fetchone()
+    hashed_password = db.execute("SELECT username, password FROM users WHERE username = :username",{"username": username}).fetchone()['password']
     if bcrypt.checkpw(request.form.get('password'), hashed_password):
         return render_template("searchPage.html", title=title)
     else:
@@ -76,7 +75,7 @@ def loggingin():
 @app.route("/search", methods=['POST','GET'])
 def search():
     title = "Search"
-    searchQuery = request.form.get("searchquery")
+    searchQuery = str(request.form.get('searchquery') or 0)
     query = '%' + searchQuery + '%'
     if db.execute("SELECT title, isbn, author, year FROM books WHERE title ILIKE :query OR isbn ILIKE :query OR author ILIKE :query", {"query": query}).rowcount == 0:
         return render_template("error.html", message="Invalid serach query, no such book.")
