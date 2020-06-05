@@ -12,6 +12,14 @@ CREATE TABLE users(
     lastname VARCHAR NOT NULL,
     username VARCHAR NOT NULL,
     email VARCHAR NOT NULL,
-    password INTEGER NOT NULL,
+    password VARCHAR(255) NOT NULL,
     UNIQUE(username)
+);
+
+CREATE TABLE reviews (
+  id SERIAL PRIMARY KEY,
+  review VARCHAR NOT NULL,
+  books_id INTEGER REFERENCES books,
+  user_id INTEGER REFERENCES users,
+  rating INTEGER NOT NULL
 );
