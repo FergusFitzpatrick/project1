@@ -1,0 +1,29 @@
+.imgContainer {
+  position: relative;
+  text-align: center;
+}
+
+.centered p, .centered h1 {
+  opacity: 1;
+  background-color: #EEEBEB;
+  border: #EEEBEB solid 2px;
+  border-radius: 15px;
+  padding: 15px;
+  font-family: "Tangerine", cursive;
+  opacity: 0.7;
+}
+
+.centered {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  transform: translate(-50%, -50%);
+}
+.centered h1 {
+  font-size: 140px;
+}
+.centered p {
+  font-size: 50px;
+}
+
+/*# sourceMappingURL=main.css.map */

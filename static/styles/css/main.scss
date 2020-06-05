@@ -1,0 +1,36 @@
+main {
+  margin-top: 100px;
+}
+
+.imgContainer {
+  position: relative;
+  text-align: center;
+}
+
+%style {
+  opacity: 1;
+  background-color: #EEEBEB;
+  border: #EEEBEB solid 2px;
+  border-radius: 15px;
+  padding: 15px;
+  font-family: 'Tangerine', cursive;
+  opacity: 0.7;
+}
+
+.centered {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  transform: translate(-50%, -50%);
+
+  h1 {
+    @extend %style;
+     font-size: 140px;
+
+  }
+  p {
+    @extend %style;
+    font-size: 50px;
+
+  }
+}
