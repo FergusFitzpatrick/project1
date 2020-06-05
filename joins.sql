@@ -1,5 +1,0 @@
-CREATE TABLE reviews (
-  id SERIAL PRIMARY KEY,
-  review VARCHAR NOT NULL,
-  books_id INTEGER REFERENCES books
-);
