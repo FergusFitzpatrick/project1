@@ -1,0 +1,39 @@
+{% extends "nav.html" %}
+{% block body %}
+
+  <main>
+    <h1>Registration Form</h1>
+    <form action="{{ url_for('login') }}" method="POST">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label>First Name</label>
+          <input type="text" class="form-control" name="firstname">
+        </div>
+        <div class="form-group col-md-6">
+          <label>Last Name</label>
+          <input type="text" class="form-control" name="lastname">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Username </label>
+        <input class="form-control" type="text" name="username" placehold="Username">
+      </div>
+      <div class="form-group">
+        <label>Email </label>
+        <input class="form-control" type="email" name="email" placehold="example@email.com">
+      </div>
+      <div class="form-group">
+        <label>Password: </label>
+        <input class="form-control" type="Password" name="password">
+      </div>
+      <div class="form-group">
+        <label>Confirm password: </label>
+        <input class="form-control" type="Password" name="password2">
+      </div>
+      <button type="submit" class="btn btn-success">Sign Up!</button>
+    </form>
+
+  </main>
+
+
+{% endblock %}

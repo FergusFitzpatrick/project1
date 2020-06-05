@@ -1,8 +1,71 @@
 {% extends "nav.html" %}
 
 {% block body %}
-  <h1>{{ book.title }}</h1>
+  <main>
 
-  <p>Number of Ratings: {{ rating }}</p>
-  <p>Rating: {{ num_rating }}</p>
+    <h1> Books Details</h1>
+    <h5>Title: {{ book.title }}</h5>
+
+    <div class="row">
+      <div class="col-lg-4 col-sm-8">
+        <ul>
+          <li>Author: {{ book.author}}</li>
+          <li>Date of publication: {{ book.year }}</li>
+          <li>ISBN: {{ book.isbn }}</li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-8">
+        <ul>
+          <li>Number of Ratings: {{ num_rating }}</li>
+          <li>Rating: {{ rating }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h3>Leave a review</h3>
+        <hr>
+        <form action="{{ url_for('reviewing') }}" method="POST">
+          <div class="form-group">
+            <p>Rating</p>
+            <div class="radio">
+              <label for="1"><input value="1" type="radio" name="rating"> 1 <i class="fas fa-star"></i></label>
+            </div>
+            <div class="radio">
+              <label for="2"><input value="2" type="radio" name="rating"> 2 <i class="fas fa-star"></i><i class="fas fa-star"></i></label>
+            </div>
+            <div class="radio">
+              <label for="3"><input value="3" type="radio" name="rating"> 3 <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></label>
+            </div>
+            <div class="radio">
+              <label for="4"><input value="4" type="radio" name="rating"> 4 <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></label>
+            </div>
+            <div class="radio">
+              <label for="5"><input value="5" type="radio" name="rating"> 5 <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Review:</label>
+            <textarea class="form-control" type="textarea" rows="5" name="review"></textarea>
+          </div>
+          <button type="submit" class="btn btn-success">Submit</button>
+            <a href="{{ url_for('search') }}" class="btn btn-info float-right">Back to Search</a>
+        </form>
+
+      </div>
+      <div class="col">
+        <h3>Reviews</h3>
+        <hr>
+        {% for review in reviews %}
+        <div class="form-group">
+          <h6>{{ review.username }}</h6>
+          <p>" {{ review.review }} "</p>
+          <h6>{{ review.rating }}<i class="fas fa-star"></i>
+          </h6>
+        </div>
+        <hr>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
 {% endblock %}

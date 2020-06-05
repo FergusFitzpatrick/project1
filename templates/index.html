@@ -3,14 +3,14 @@
 {{ title }}
 
 {% block body %}
-<main style="background: url(static/books-1245690_1920.jpg); padding: 15px;">
-  <h1 style="color: white;"> Home Page </h1>
-
-  <div class="row" style="color: white;">
-    <div class="col-lg-3 col-sm-6">
-      <p>Log in to leave a review and rating!</p>
-      <p>If you dont have an account <a href="">click here</a> to sign up!</p>
+</div>
+    <div class="imgContainer">
+      <img style="width: 100%; height: auto;" src="static/books-1245690_1920.jpg" alt="Shelves of books">
+      <div class="centered">
+        <h1> Home Page </h1>
+        <p>Log in to leave a review and rating! </p>
+        <a class="btn btn-info" href="{{ url_for('signup') }}">Sign Up</a>
+        <a class="btn btn-success" href="{{ url_for('login') }}">Log In</a>
+      </div>
     </div>
-  </div>
-</main>
 {% endblock %}
